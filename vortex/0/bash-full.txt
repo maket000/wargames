@@ -1,0 +1,26 @@
+maket@anderson ~/p/v/0> gcc -o vortex0 vortex0.c
+maket@anderson ~/p/v/0> ./vortex0
+Username: vortex1 Password: Gq#qu3bF3
+maket@anderson ~/p/v/0> ssh vortex1@vortex.labs.overthewire.org -p 2228
+                 _
+__   _____  _ __| |_ _____  __
+\ \ / / _ \| '__| __/ _ \ \/ /
+ \ V / (_) | |  | ||  __/>  <
+  \_/ \___/|_|   \__\___/_/\_\
+
+a http://www.overthewire.org wargame.
+
+vortex1@vortex.labs.overthewire.org's password:
+Welcome to Ubuntu 14.04 LTS (GNU/Linux 4.4.0-92-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+vortex1@vortex:~$ whoami
+vortex1
