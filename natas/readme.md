@@ -58,7 +58,7 @@ Bit of a cheeky comment in the page's source this time:
 <!-- No more information leaks!! Not even Google will find it this time... -->
 ```
 
-While I'm sure I could google `"natas3 solution"` to find that ellusive password, I realized after a bit of thinking that this comment was hinting toward's the site's `robots.txt`, a file that contains rules for web-crawlers
+While I'm sure I could google `"natas3 solution"` to find that elusive password, I realized after a bit of thinking that this comment was hinting towards the site's `robots.txt`, a file that contains rules for web-crawlers
 
 ```
 User-agent: *
@@ -75,9 +75,9 @@ natas4:Z9tkRkWmpt9Qr7XrR5jWRkgOU901swEZ
 
 ### [natas4](http://natas4.natas.labs.overthewire.org/)
 
-natas4:sJIJNW6ucpu6HPZ1ZAchaDtwd7oGrD14
+natas4:Z9tkRkWmpt9Qr7XrR5jWRkgOU901swEZ
 
-Okay, so here we'll need to spoof the referer header to get the info we need, let's just use `curl`.
+Okay, so here we'll need to spoof the referrer header to get the info we need, let's just use `curl`.
 
 ```console
 curl -u natas4:Z9tkRkWmpt9Qr7XrR5jWRkgOU901swEZ natas4.natas.labs.overthewire.org --referer "http://natas5.natas.labs.overthewire.org/"
@@ -131,7 +131,7 @@ A useful hint appears in the source of this one
 <!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->
 ```
 
-So clearly we're going to be poking our way into the server a bit, let's abuse the `index.php?page=X` layout this page is using. Let's jsut try `natas7.natas.labs.overthewire.org/index.php?page=` to start
+So clearly we're going to be poking our way into the server a bit, let's abuse the `index.php?page=X` layout this page is using. Let's just try `natas7.natas.labs.overthewire.org/index.php?page=` to start
 
 ```
 Warning: include(): Filename cannot be empty in /var/www/natas/natas7/index.php on line 21
@@ -232,3 +232,37 @@ the output is large, but the password we need is there
 natas11:U82q5TCMMQ9xuFoI3dYX61s7OZD9JKoK
 
 We'll be reverse engineering the key used to XOR encrypt the cookie that stores the `showpassword` and `bgcolor` variables, then we'll use that key to encrypt data with `showpassword="yes"`, which will make the page give us the password.
+
+```PHP
+<?php
+
+$encrypted_cookie = base64_decode("ClVLIh4ASCsCBE8lAxMacFMZV2hdVVotEhhUJQNVAmhSEV4sFxFeaAw=");
+$decrypted_cookie = json_encode(array( "showpassword"=>"no", "bgcolor"=>"#ffffff"));  
+$key = '';
+for($i=0;$i<strlen($decrypted_cookie);$i++) {  
+    $key .= $encrypted_cookie[$i] ^ $decrypted_cookie[$i % strlen($decrypted_cookie)];  
+}  
+
+$custom_cookie = json_encode(array( "showpassword"=>"yes", "bgcolor"=>"#ffffff"));
+$cc_out = '';
+for($i=0;$i<strlen($custom_cookie);$i++) {  
+    $cc_out .= $custom_cookie[$i] ^ $key[$i % strlen($custom_cookie)];  
+}  
+
+print(base64_encode($cc_out));
+
+?>  
+```
+
+```console
+maket@anderson ~/p/o/natas> php -f natas11.php
+ClVLIh4ASCsCBE8lAxMacFMOXTlTWxooFhRXJh4FGnBTVF4sFxFeLFMK
+```
+
+Now we replace the existing cookie with our forged one to get our password
+
+```
+
+The password for natas12 is
+EDXp0pS26wLKHZy1rDBPUZk0RKfLGIR3
+```
