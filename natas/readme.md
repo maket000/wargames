@@ -296,7 +296,7 @@ jmLTY0qiPZBbaKc9341cqPQZBJv7MQbY
 
 ### [natas13](http://natas13.natas.labs.overthewire.org/)
 
-natas12:jmLTY0qiPZBbaKc9341cqPQZBJv7MQbY
+natas13:jmLTY0qiPZBbaKc9341cqPQZBJv7MQbY
 
 Natas level 13 is much like the previous level, the only addition is in a check using php's `exif_imagetype` function. This function merely checks the header of the file to see if it contains the a magic number that an image filetype would contain.
 By appending the jpeg header `ff d8 ff e0` to our code, we should be able to bypass this check.
@@ -307,4 +307,20 @@ We do this, and recieve our password.
 Lg96M10TdfaPyVBkJdjymbllQ5L6qdl1
 ```
 
+### [natas14](http://natas14.natas.labs.overthewire.org/)
 
+natas14:Lg96M10TdfaPyVBkJdjymbllQ5L6qdl1
+
+Natas level 14 is just some simple SQL injection, I'm sure more is soon to follow though
+
+We input `natas15` as our username and `" or ""="` as our password. This results in the query made being
+
+```SQL
+SELECT * from users where username=natas15 and password= "" or ""=""
+```
+
+The password condition will always be true, so we are returned natas15's password
+
+```
+AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J
+```
