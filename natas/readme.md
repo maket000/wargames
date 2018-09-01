@@ -262,7 +262,35 @@ ClVLIh4ASCsCBE8lAxMacFMOXTlTWxooFhRXJh4FGnBTVF4sFxFeLFMK
 Now we replace the existing cookie with our forged one to get our password
 
 ```
-
 The password for natas12 is
-EDXp0pS26wLKHZy1rDBPUZk0RKfLGIR3
+EDXp0pS26wLKHZy1rDBPUZk0RKfLGI3R
 ```
+
+### [natas12](http://natas12.natas.labs.overthewire.org/)
+
+natas12:EDXp0pS26wLKHZy1rDBPUZk0RKfLGI3R
+
+This problem is finding an exploit on an image uploading service.
+
+We see that the servercode never actually checks that the file we're uploading is a jpeg, it merely makes a random file with a .jpg extension, or in reality, it makes a random filename with the same extension as the temporary filename generated in the HTML.
+
+```HTML
+<input type="hidden" name="filename" value="<? print genRandomString(); ?>.jpg" />
+```
+
+This filename is generated when the user loads the page, but it can be edited before we submit our file, meaning we can change the extension on the value attribute of that input tag, and when the file is uploaded it will have a `.php` extension. This will make the server treat the file like a `PHP` document, meaning we can excecute whatever code we want on this thing.
+
+```HTML
+<html><body><?php
+
+print(passthru("cat /etc/natas_webpass/natas13"));
+
+?></body></html>
+```
+
+We upload that file, change the tag to `whatever.php`, upload our file, and are given a link that gives us the next password.
+
+```
+jmLTY0qiPZBbaKc9341cqPQZBJv7MQbY
+```
+
