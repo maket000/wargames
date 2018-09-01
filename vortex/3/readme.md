@@ -1,7 +1,7 @@
 ## Vortex Level 3 → Level 4
 ### A Stack Overflow with a Difference
 
-Problem page: <http://overthewire.org/wargames/vortex/vortex2.html>
+Problem page: <http://overthewire.org/wargames/vortex/vortex3.html>
 
 
 The exploitable part of this program is the `strcpy` which does not check the length of the data being copied, so if we pass in more data into the program we'll be able to overwrite the value of `lpp`, which is then conveniently dereferenced and set to point to the address of `buf`.
