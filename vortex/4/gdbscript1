@@ -1,0 +1,9 @@
+catch exec
+run
+break printf
+cont
+break *vfprintf+12895
+break *vfprintf+13000
+layout asm
+layout regs
+refresh

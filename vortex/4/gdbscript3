@@ -1,0 +1,15 @@
+catch exec
+run
+break printf
+cont
+fin
+
+while *0x0804a014 != 0xffffdfc8
+  file p
+  catch exec
+  run
+  break printf
+  cont
+  fin
+
+x 0x0804a014

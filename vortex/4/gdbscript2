@@ -1,0 +1,10 @@
+catch exec
+run
+break printf
+cont
+layout asm
+layout regs
+refresh
+fin
+refresh
+x/x 0x0804a014
